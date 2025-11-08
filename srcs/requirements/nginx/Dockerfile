@@ -2,7 +2,7 @@
 FROM debian:bookworm
 
 # NGINX ve OpenSSL kurulumu
-RUN apt-get update && apt-get install -y --no-install-recommends nginx openssl \
+RUN apt-get update && apt-get install -y --no-install-recommends nginx openssl iputils-ping \
  && rm -rf /var/lib/apt/lists/* \
  && mkdir -p /etc/nginx/ssl /run/nginx /var/www/html \
  # Self-signed SSL sertifikası oluştur

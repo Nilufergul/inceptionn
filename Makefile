@@ -20,7 +20,7 @@ ps:
 clean: down
 	docker system prune -af --volumes
 
-fclean: clean
+fclean:
 	docker stop $(docker ps -qa) 2>/dev/null || true
 	docker rm $(docker ps -qa) 2>/dev/null || true
 	docker rmi -f $(docker images -qa) 2>/dev/null || true

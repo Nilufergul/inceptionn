@@ -5,6 +5,7 @@ FROM debian:bookworm
 RUN apt-get update && apt-get install -y --no-install-recommends \
     mariadb-server \
     mariadb-client \
+    iputils-ping \
     && rm -rf /var/lib/apt/lists/*
 
 # MariaDB veri dizinini oluştur

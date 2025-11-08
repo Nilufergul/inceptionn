@@ -3,7 +3,7 @@ FROM debian:bookworm
 
 # PHP-FPM, MySQL modülü ve gerekli araçlar
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    php8.2 php8.2-fpm php8.2-mysql curl wget mariadb-client unzip \
+    php8.2 php8.2-fpm php8.2-mysql curl wget mariadb-client unzip ca-certificates iputils-ping \
  && rm -rf /var/lib/apt/lists/*
 
 # PHP-FPM ayarları (Docker uyumlu)
