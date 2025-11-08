@@ -1,0 +1,80 @@
+version: "3.8"
+
+networks:
+  inception:
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ngulcift/data/mariadb
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/ngulcift/data/wordpress
+
+services:
+  # 🧱 MariaDB
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    env_file: ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${WP_DB_NAME}
+      MYSQL_USER: ${WP_DB_USER}
+      MYSQL_PASSWORD: ${WP_DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql               # Veriler kalıcı olur
+    expose:
+      - "3306"                               # Ağ içinde 3306'dan ulaşılır
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - inception
+
+  # ⚙️ WordPress (php-fpm)
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    env_file: ./.env
+    environment:
+      WP_DB_NAME: ${WP_DB_NAME}
+      WP_DB_USER: ${WP_DB_USER}
+      WP_DB_PASSWORD: ${WP_DB_PASSWORD}
+      WP_DB_HOST: mariadb:3306
+    volumes:
+      - wp_data:/var/www/html
+    expose:
+      - "9000"                               # NGINX, php-fpm'ye bu porttan bağlanır
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    restart: always
+    networks:
+      - inception
+
+  # 🌐 NGINX (SSL + HTTPS)
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    env_file: ./.env
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+    ports:
+      - "443:443"                            # HTTPS dış dünyaya açılır
+    volumes:
+      - wp_data:/var/www/html:ro             # WP dosyaları read-only
+    depends_on:
+      - wordpress
+    restart: always
+    networks:
+      - inception
