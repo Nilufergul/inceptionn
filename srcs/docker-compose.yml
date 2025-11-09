@@ -21,6 +21,7 @@ services:
   # 🧱 MariaDB
   mariadb:
     build: ./requirements/mariadb
+    image: mariadb
     container_name: mariadb
     env_file: ./.env
     environment:
@@ -44,6 +45,7 @@ services:
   # ⚙️ WordPress (php-fpm)
   wordpress:
     build: ./requirements/wordpress
+    image: wordpress
     container_name: wordpress
     env_file: ./.env
     environment:
@@ -51,6 +53,14 @@ services:
       WP_DB_USER: ${WP_DB_USER}
       WP_DB_PASSWORD: ${WP_DB_PASSWORD}
       WP_DB_HOST: mariadb:3306
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      WP_SITE_TITLE: ${WP_SITE_TITLE}
+      WP_ADMIN_USER: ${WP_ADMIN_USER}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL}
+      WP_USER: ${WP_USER}
+      WP_USER_PASSWORD: ${WP_USER_PASSWORD}
+      WP_USER_EMAIL: ${WP_USER_EMAIL}
     volumes:
       - wp_data:/var/www/html
     expose:
@@ -65,6 +75,7 @@ services:
   # 🌐 NGINX (SSL + HTTPS)
   nginx:
     build: ./requirements/nginx
+    image: nginx
     container_name: nginx
     env_file: ./.env
     environment:

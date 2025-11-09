@@ -1,5 +1,5 @@
-# Debian tabanlı minimal imaj (penultimate version: bookworm)
-FROM debian:bookworm
+# Debian tabanlı minimal imaj (penultimate version: bullseye)
+FROM debian:bullseye
 
 # NGINX ve OpenSSL kurulumu
 RUN apt-get update && apt-get install -y --no-install-recommends nginx openssl iputils-ping \

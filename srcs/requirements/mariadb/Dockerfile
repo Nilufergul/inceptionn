@@ -1,5 +1,5 @@
-# Debian tabanlı minimal imaj (penultimate version: bookworm)
-FROM debian:bookworm
+# Debian tabanlı minimal imaj (penultimate version: bullseye)
+FROM debian:bullseye
 
 # MariaDB ve gerekli araçları kur
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p /var/lib/mysql /var/run/mysqld \
     && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 
-# Init script'i kopyala
+# Konfigürasyon ve init script'ini kopyala
+COPY conf/99-custom.cnf /etc/mysql/mariadb.conf.d/99-custom.cnf
 COPY tools/init.sh /init.sh
 RUN chmod +x /init.sh
 
